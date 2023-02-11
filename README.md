@@ -1,1 +1,1 @@
-# event-list-nextjs
+# nextjs course

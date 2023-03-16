@@ -2,11 +2,11 @@
 
 # Next build dir
 
-.next/
+.next
 
-# node_modules
+# dependencies
 
-node_modules/
+node_modules
 
 yarn.lock
 

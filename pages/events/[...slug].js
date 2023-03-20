@@ -1,33 +1,23 @@
-import { useRouter } from 'next/router';
-import EventList from '../../components/events/event-list';
-import ResultsTitle from '../../components/events/results-title';
 import { Fragment, useEffect, useState } from 'react';
-import Button from '../../components/ui/button';
-import ErrorAlert from '../../components/ui/error-alert';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import Head from 'next/head';
 
-function FilteredEventsPage() {
+import { getFilteredEvents } from '../../helpers/api-util';
+import EventList from '../../components/events/event-list';
+import ResultsTitle from '../../components/events/results-title';
+import Button from '../../components/ui/button';
+import ErrorAlert from '../../components/ui/error-alert';
+
+function FilteredEventsPage(props) {
   const [loadedEvents, setLoadedEvents] = useState();
   const router = useRouter();
-  const fireBaseUrl = 'https://event-list-6aeb4-default-rtdb.firebaseio.com/events.json'
-
-  /* NOTES : Extracting Data encoded in the URL using useRouter Next Hook 
-    Get the data using useRouter to query the "slug" data, and store its value. 
-    If the Data is not loaded, if his value is Falsy (undefined), in case of the first built in page
-  */
 
   const filterData = router.query.slug;
 
-
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-
-
   const { data, error } = useSWR(
-    fireBaseUrl, fetcher
-
+    'https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json'
   );
-
 
   useEffect(() => {
     if (data) {
@@ -39,6 +29,7 @@ function FilteredEventsPage() {
           ...data[key],
         });
       }
+
       setLoadedEvents(events);
     }
   }, [data]);
@@ -51,10 +42,12 @@ function FilteredEventsPage() {
   );
 
   if (!loadedEvents) {
-    return <Fragment>
-      {pageHeadData}
-      <p className='center'>Loading...</p>;
-    </Fragment>
+    return (
+      <Fragment>
+        {pageHeadData}
+        <p className='center'>Loading...</p>
+      </Fragment>
+    );
   }
 
   const filteredYear = filterData[0];
@@ -73,7 +66,6 @@ function FilteredEventsPage() {
     </Head>
   );
 
-
   if (
     isNaN(numYear) ||
     isNaN(numMonth) ||
@@ -87,7 +79,7 @@ function FilteredEventsPage() {
       <Fragment>
         {pageHeadData}
         <ErrorAlert>
-          <p>Invalid Filter. Please adjust your values!</p>
+          <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
         <div className='center'>
           <Button link='/events'>Show All Events</Button>
@@ -103,7 +95,6 @@ function FilteredEventsPage() {
       eventDate.getMonth() === numMonth - 1
     );
   });
-
 
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
@@ -151,17 +142,17 @@ function FilteredEventsPage() {
 //   ) {
 //     return {
 //       props: { hasError: true },
-//       notFound: true,
+//       // notFound: true,
 //       // redirect: {
 //       //   destination: '/error'
 //       // }
-//     }
-//   };
+//     };
+//   }
 
 //   const filteredEvents = await getFilteredEvents({
 //     year: numYear,
 //     month: numMonth,
-//   })
+//   });
 
 //   return {
 //     props: {
@@ -169,9 +160,9 @@ function FilteredEventsPage() {
 //       date: {
 //         year: numYear,
 //         month: numMonth,
-//       }
-//     }
-//   }
+//       },
+//     },
+//   };
 // }
 
 export default FilteredEventsPage;

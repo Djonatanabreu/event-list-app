@@ -33,7 +33,7 @@ function NewsletterRegistration() {
           throw new Error(data.message || 'Something went wrong.');
         });
       })
-      .then((data) => {
+      .then(() => {
         notificationCtx.showNotification({
           title: 'Success!',
           message: 'Successfully Registered for newsletter.',
